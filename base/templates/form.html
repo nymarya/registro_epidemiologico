@@ -1,5 +1,60 @@
-<form action="/your-name/" method="post">
-    {% csrf_token %}
-    {{ form }}
-    <input type="submit" value="Submit">
-</form>
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block css %}
+    <link href="{% static 'libs/select2/dist/css/select2.min.css' %}"
+          rel="stylesheet" type="text/css"/>
+    <script src="{% static 'libs/select2/dist/js/select2.min.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+        <div class="col-xl-10">
+            <div class="card">
+                <div class="card-body">
+
+                    <form action="/your-name/" method="post" class="form">
+                        {% csrf_token %}
+                         <div class="row">
+                            <div class="col-12">
+                                {% for field in form %}
+                                    <div class="form-group row mb-3">
+                                        <label class="col-md-3 col-form-label">
+                                            {{ field.label }}</label>
+                                        <div class="col-md-9">
+                                            {{ field }}
+                                            <small>{{ field.help_text }}</small>
+                                            <small><font color="red"><b>
+                                                {{ field.errors }}</b></font></small>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div> <!-- end col -->
+                        </div> <!-- end row -->
+
+                        <ul class="list-inline wizard mb-0">
+                            <div class="list-inline-item">
+                                <a class="btn btn-danger btn-block" href="/"> Cancelar </a>
+                            </div>
+                             <div class="list-inline-item float-right">
+                                <button class="btn btn-success btn-block width-lg"
+                                        type="submit"> Salvar </button>
+                            </div>
+                        </ul>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+</div>
+{% endblock %}
+
+{% block  scripts %}
+    {{ form.media.js }}
+    <script>
+$(function () {
+    $('.django-select2').djangoSelect2();
+  })
+</script>
+{% endblock %}

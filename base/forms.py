@@ -38,12 +38,14 @@ class PacienteForm(forms.ModelForm):
                                                   "data-placeholder": "Busque e selecione um município"}))
     password = forms.CharField(
             label=u'Senha*',
-            widget=forms.PasswordInput(render_value=False)
+            widget=forms.PasswordInput(render_value=False,
+                                       attrs={'class': "form-control"})
         )
 
     confirma_password = forms.CharField(
         label=u'Confirmar Senha*',
-        widget=forms.PasswordInput(render_value=False)
+        widget=forms.PasswordInput(render_value=False,
+                                   attrs={'class': "form-control"})
     )
 
     class Meta:
