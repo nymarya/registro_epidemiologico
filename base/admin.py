@@ -67,7 +67,7 @@ class PacienteAdmin(admin.ModelAdmin):
             data = obj.usuario.data_nascimento.strftime("%d/%m/%Y")
             form.base_fields['data_nascimento'].initial = data
             form.base_fields['sexo'].initial = obj.usuario.sexo
-            form.base_fields['municipio'].initial = obj.usuario.municipio
+            form.base_fields['municipio'].initial = [obj.usuario.municipio.id]
             form.base_fields['email'].initial = obj.usuario.email
 
             # todo: retirar senha no edit

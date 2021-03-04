@@ -116,7 +116,7 @@ class PacienteAdminForm(forms.ModelForm):
                                         'data-placeholder': 'selecione o sexo'}))
     municipio = forms.ModelChoiceField(Municipio.objects,
                                        label=u'Município', required=False,
-                                       empty_label=u'Selecione o Estado',
+                                       empty_label=u'Selecione o Município',
                                        widget=forms.Select(
                                            attrs={'class': 'form-control'}
                                        )
