@@ -40,7 +40,7 @@ class Doenca(models.Model):
 class PacienteDoenca(models.Model):
     pacientes = models.ForeignKey('base.Paciente', on_delete=models.CASCADE)
     doencas = models.ForeignKey('base.Doenca', on_delete=models.CASCADE)
-    tempo_diagostico = models.CharField(max_length=100)
+    tempo_diagnostico = models.CharField(max_length=100)
 
 
 class Paciente(models.Model):
