@@ -47,6 +47,9 @@ class Paciente(models.Model):
     usuario = models.OneToOneField('base.User', on_delete=models.CASCADE)
     descricao_caso = models.TextField(null=True)
 
+    def __str__(self):
+        return self.usuario.nome
+
 
 class Medico(models.Model):
     usuario = models.OneToOneField('base.User', on_delete=models.CASCADE)
@@ -84,6 +87,7 @@ class User(AbstractUser):
 
     class Meta:
         db_table = 'auth_user'
+        verbose_name = 'Usuário'
 
     def __str__(self):
         return self.nome

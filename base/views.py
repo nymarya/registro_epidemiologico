@@ -2,6 +2,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 
 # Create your views here.
+from base import utils
 from base.forms import PacienteForm
 from base.models import User
 
@@ -13,17 +14,8 @@ def autocadastro(request):
         if form.is_valid():
             cpf = form.cleaned_data['cpf'].replace('-', '').replace('.', '')
             usuario = User.objects.get_or_create(username=cpf)[0]
-            print(usuario)
             # todo: verificar se usuario ja esta criado
-            usuario.username = cpf
-            usuario.cpf = form.cleaned_data['cpf']
-            usuario.nome = form.cleaned_data['nome']
-            usuario.nome_mae = form.cleaned_data['nome_mae']
-            usuario.data_nascimento = form.cleaned_data['data_nascimento']
-            usuario.email = form.cleaned_data['email']
-            usuario.sexo = form.cleaned_data['sexo']
-            usuario.set_password(form.cleaned_data['password'])
-            usuario.save()
+            utils.save_user(usuario, form, cpf)
             return redirect('autocadastro')
 
     # if a GET (or any other method) we'll create a blank form
