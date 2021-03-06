@@ -28,7 +28,7 @@ class Municipio(models.Model):
 
 class Doenca(models.Model):
     nome = models.CharField(max_length=80)
-    cid = models.CharField(max_length=6)
+    cid = models.CharField(max_length=6, blank=True)
 
     class Meta:
         ordering = ('nome', )
