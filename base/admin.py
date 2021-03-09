@@ -40,6 +40,12 @@ class UsuarioMedicoAdmin(admin.ModelAdmin):
     model = User
 
 
+class PacienteDoencaAdmin(admin.ModelAdmin):
+    model = PacienteDoenca
+    list_display = ('doenca', 'paciente', 'tempo_diagnostico')
+    search_fields = ['doenca__nome__icontains', 'paciente__usuario__nome', 'tempo_diagnostico']
+
+
 class PacienteDoencaInline(admin.TabularInline):
     model = PacienteDoenca
 
@@ -80,4 +86,5 @@ class PacienteAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Paciente, PacienteAdmin)
+admin.site.register(PacienteDoenca, PacienteDoencaAdmin)
 admin.site.register(User, UsuarioPacienteAdmin)
