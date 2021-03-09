@@ -42,7 +42,15 @@ class Doenca(models.Model):
 class PacienteDoenca(models.Model):
     pacientes = models.ForeignKey('base.Paciente', on_delete=models.CASCADE)
     doencas = models.ForeignKey('base.Doenca', on_delete=models.CASCADE)
-    tempo_diagnostico = models.CharField(max_length=100)
+    tempo_diagnostico = models.CharField(u'Tempo de Diagnóstico', blank=True,
+                                         max_length=100)
+
+    class Meta:
+        verbose_name = 'Doença do Paciente'
+        verbose_name_plural = 'Doenças do Paciente'
+
+    def __str__(self):
+        return "Doença"
 
 
 class Paciente(models.Model):

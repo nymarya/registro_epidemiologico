@@ -115,22 +115,11 @@ class PacienteAdminForm(forms.ModelForm):
                                  attrs={'class': "form-control",
                                         'data-placeholder': 'selecione o sexo'}))
     municipio = forms.ModelChoiceField(Municipio.objects,
-                                       label=u'Município', required=False,
+                                       label=u'Município', required=True,
                                        empty_label=u'Selecione o Município',
                                        widget=forms.Select(
                                            attrs={'class': 'form-control'}
-                                       )
-                                       # obj_label='nome',
-                                       # form_filters=[
-                                       #     ('estado', 'estado_id')]
-                                       )
-
-    doencas = forms.ModelMultipleChoiceField(label='Doenças',
-                                             queryset=Doenca.objects.all(),
-                                             required=False,
-                                             widget=forms.SelectMultiple(
-                                                 attrs={'class': "form-control",
-                                                        "data-placeholder": "busque e selecione as doenças que possui"}))
+                                       ))
 
     descricao_caso = forms.CharField(label=u'Descrição do caso',
                                      widget=forms.Textarea(

@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from . import utils
 from .forms import PacienteForm, PacienteAdminForm
-from .models import Medico, Paciente, User
+from .models import Medico, Paciente, User, PacienteDoenca
 
 
 # Register your models here.
@@ -40,8 +40,13 @@ class UsuarioMedicoAdmin(admin.ModelAdmin):
     model = User
 
 
+class PacienteDoencaInline(admin.TabularInline):
+    model = PacienteDoenca
+
+
 class PacienteAdmin(admin.ModelAdmin):
     form = PacienteAdminForm
+    inlines = [PacienteDoencaInline]
 
     def save_model(self, request, obj, form, change):
         cpf = form.cleaned_data['cpf'].replace('-', '').replace('.', '')
@@ -50,12 +55,6 @@ class PacienteAdmin(admin.ModelAdmin):
         obj.usuario = usuario
         obj.descricao_caso = form.cleaned_data['descricao_caso']
         obj.save()
-        # if not change:
-        #     frase = '{}{}'.format(obj.nome, user.username)
-        #     senha = hashlib.sha1(frase.encode('utf-8')).hexdigest()[0:6]
-        #     user.set_password(senha)
-        #     user.save()
-        #     enviar_email_cadastro(user, senha)
 
     def get_form(self, request, obj=None, **kwargs):
         form = super(PacienteAdmin, self).get_form(request, obj, **kwargs)
@@ -71,6 +70,11 @@ class PacienteAdmin(admin.ModelAdmin):
             form.base_fields['email'].initial = obj.usuario.email
 
             # todo: retirar senha no edit
+            form.base_fields['password'].required = False
+            form.base_fields['confirma_password'].required = False
+        else :
+            form.base_fields['password'].required = True
+            form.base_fields['confirma_password'].required = True
 
         return form
 
