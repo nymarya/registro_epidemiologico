@@ -34,7 +34,9 @@ class Doenca(models.Model):
         ordering = ('nome', )
 
     def __str__(self):
-        return u'%s - %s' % (self.cid[:3] + '.' + self.cid[3:], self.nome)
+        cid_formatada = self.cid[:3] + '.' + self.cid[3:] if len(self.cid) > 3 else self.cid
+        cid = u'(%s)' % cid_formatada if self.cid else ''
+        return u'%s %s' % (self.nome, cid)
 
 
 class PacienteDoenca(models.Model):
