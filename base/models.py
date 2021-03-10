@@ -94,8 +94,8 @@ class User(AbstractUser):
         (SEXO_FEMININO, u'Feminino'),
     )
 
-    nome = models.CharField(max_length=80)
-    nome_mae = models.CharField(max_length=80)
+    nome = models.CharField(u'Nome', max_length=80)
+    nome_mae = models.CharField(u'Nome da Mãe', max_length=80)
     cpf = models.CharField(u'CPF', max_length=15,
                            help_text=u'Digite o CPF sem pontos ou traços.',
                            null=True, unique=True)

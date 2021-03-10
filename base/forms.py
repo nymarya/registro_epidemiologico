@@ -203,3 +203,57 @@ class MedicoAdminForm(forms.ModelForm):
     class Meta:
         fields = ['cpf']
         model = Medico
+
+class UsuarioAdminForm(forms.ModelForm):
+    cpf = BRCPFField(label=u'CPF', widget=forms.TextInput(
+        attrs={'placeholder': '000.000.000-00', 'class': "form-control",
+               'data-toggle': "input-mask",
+               'data-mask-format': "000.000.000-00"}))
+    nome = forms.CharField(label='Nome Completo', widget=forms.TextInput(
+        attrs={'placeholder': 'nome completo', 'class': "form-control"}))
+    nome_mae = forms.CharField(label='Nome da Mãe', widget=forms.TextInput(
+        attrs={'placeholder': 'nome completo da mãe', 'class': "form-control"}))
+
+    data_nascimento = forms.DateField(label=u'Data de Nascimento',
+                                      widget=forms.DateInput(format='%d/%m/%Y',
+                                                             attrs={
+                                                                 'placeholder': 'dia/mês/ano',
+                                                                 'class': 'form-control',
+                                                                 'data-toggle': "input-mask",
+                                                                 'data-mask-format': "00/00/0000",
+                                                                 'data-parsley-pattern': "(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d"}))
+
+    sexo = forms.ChoiceField(label='Sexo', choices=User.SEXO_FORM_CHOICES,
+                             widget=forms.Select(
+                                 attrs={'class': "form-control",
+                                        'data-placeholder': 'selecione o sexo'}))
+    municipio = forms.ModelChoiceField(Municipio.objects,
+                                       label=u'Município', required=True,
+                                       empty_label=u'Selecione o Município',
+                                       widget=forms.Select(
+                                           attrs={'class': 'form-control'}
+                                       ))
+
+    email = forms.CharField(label=u'Email', required=True,
+                            widget=forms.TextInput(
+                                attrs={'placeholder': 'email@email.com',
+                                       'class': "form-control"}))
+    eh_gestor = forms.BooleanField(label=u'É gestor', required=False,
+                                   widget=forms.CheckboxInput(
+                                       attrs={'class': 'form-control'}
+                                   ))
+    password = forms.CharField(
+        label=u'Senha*',
+        widget=forms.PasswordInput(render_value=False,
+                                   attrs={'class': "form-control"})
+    )
+
+    confirma_password = forms.CharField(
+        label=u'Confirmar Senha*',
+        widget=forms.PasswordInput(render_value=False,
+                                   attrs={'class': "form-control"})
+    )
+
+    class Meta:
+        fields = ['cpf']
+        model = User
