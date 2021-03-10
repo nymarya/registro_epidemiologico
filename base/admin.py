@@ -1,36 +1,14 @@
 from django.contrib import admin
 
 from . import utils
-from .forms import PacienteForm, PacienteAdminForm, MedicoAdminForm
-from .models import Medico, Paciente, User, PacienteDoenca
+from .forms import PacienteAdminForm, MedicoAdminForm
+from .models import Medico, Paciente, User, PacienteDoenca, Doenca
 
 
 # Register your models here.
 
-
-# class MedicoAdmin(admin.ModelAdmin):
-#     fields = ['crm']
-
-class MedicoInline(admin.TabularInline):
-    model = Medico
-
-# class DoencaInline(admin.StackedInline):
-#     model = Choice
-#     extra = 3
-
-
-class PacienteInline(admin.TabularInline):
-    model = Paciente
-
-
-class UsuarioPacienteAdmin(admin.ModelAdmin):
-    fields = ['cpf', 'nome', 'nome_mae', 'sexo', 'data_nascimento',
-              'email', 'municipio', 'password']
-    inlines = [PacienteInline]
-    model = User
-
-    class Meta:
-        verbose_name = 'aa'
+class DoencaAdmin(admin.ModelAdmin):
+    model = Doenca
 
 
 class MedicoAdmin(admin.ModelAdmin):
@@ -56,10 +34,13 @@ class MedicoAdmin(admin.ModelAdmin):
             form.base_fields['sexo'].initial = obj.usuario.sexo
             form.base_fields['municipio'].initial = [obj.usuario.municipio.id]
             form.base_fields['email'].initial = obj.usuario.email
+            form.base_fields['eh_gestor'].initial = obj.usuario.eh_gestor
 
             form.base_fields['password'].required = False
             form.base_fields['confirma_password'].required = False
         else:
+            for field in form.base_fields.keys():
+                form.base_fields[field].initial = None
             form.base_fields['password'].required = True
             form.base_fields['confirma_password'].required = True
 
@@ -104,6 +85,8 @@ class PacienteAdmin(admin.ModelAdmin):
             form.base_fields['password'].required = False
             form.base_fields['confirma_password'].required = False
         else:
+            for field in form.base_fields.keys():
+                form.base_fields[field].initial = None
             form.base_fields['password'].required = True
             form.base_fields['confirma_password'].required = True
 

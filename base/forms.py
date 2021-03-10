@@ -180,6 +180,10 @@ class MedicoAdminForm(forms.ModelForm):
     crm = forms.CharField(label=u'CRM', widget=forms.TextInput(
                                          attrs={'placeholder': 'CRM',
                                                 'class': "form-control"}))
+
+    eh_gestor = forms.BooleanField(label=u'É gestor', required=False, widget=forms.CheckboxInput(
+        attrs={'class': 'form-control'}
+    ))
     email = forms.CharField(label=u'Email', required=True,
                             widget=forms.TextInput(
                                 attrs={'placeholder': 'email@email.com',
