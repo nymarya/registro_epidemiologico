@@ -14,7 +14,7 @@ def autocadastro(request):
             cpf = form.cleaned_data['cpf'].replace('-', '').replace('.', '')
             usuario = User.objects.get_or_create(username=cpf, is_staff=True)[0]
             # todo: verificar se usuario ja esta criado
-            utils.save_user(usuario, form, cpf)
+            utils.salva_usuario(usuario, form, cpf)
             return redirect('autocadastro')
 
     else:

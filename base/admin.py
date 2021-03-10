@@ -32,7 +32,7 @@ class MedicoAdmin(admin.ModelAdmin):
     def save_model(self, request, obj, form, change):
         cpf = form.cleaned_data['cpf'].replace('-', '').replace('.', '')
         usuario = User.objects.get_or_create(username=cpf, is_staff=True)[0]
-        utils.save_user(usuario, form, cpf)
+        utils.salva_usuario(usuario, form, cpf)
         obj.usuario = usuario
         obj.crm = form.cleaned_data['crm']
         obj.save()
@@ -119,10 +119,20 @@ class PacienteAdmin(admin.ModelAdmin):
     form = PacienteAdminForm
     inlines = [PacienteDoencaInline]
 
+    model = Paciente
+
+    list_display = ('nome', 'faixa_etaria')
+
+    def nome(self, obj):
+        return obj.usuario
+
+    def faixa_etaria(self, obj):
+        return utils.calcula_faixa_etaria(obj.usuario.data_nascimento)
+
     def save_model(self, request, obj, form, change):
         cpf = form.cleaned_data['cpf'].replace('-', '').replace('.', '')
         usuario = User.objects.get_or_create(username=cpf, is_staff=True)[0]
-        utils.save_user(usuario, form, cpf)
+        utils.salva_usuario(usuario, form, cpf)
         obj.usuario = usuario
         obj.descricao_caso = form.cleaned_data['descricao_caso']
         obj.save()

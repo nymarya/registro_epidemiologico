@@ -1,6 +1,8 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+from .utils import calcula_faixa_etaria
+
 # Create your models here.
 
 class UnidadeFederativa(models.Model):
@@ -72,6 +74,10 @@ class Medico(models.Model):
     def __str__(self):
         return self.usuario.nome
 
+    @property
+    def faixa_etaria(self):
+        return calcula_faixa_etaria(self.usuario.data_nascimento)
+
 
 class User(AbstractUser):
     SEXO_MASCULINO = u'M'
@@ -108,8 +114,3 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.nome
-    # TODO: calcular faixa etaria
-    # @property
-    # def idade(self):
-    #     if self.data_nascimento:
-    #         return get_age(self.data_nascimento)
