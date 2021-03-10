@@ -65,6 +65,12 @@ class Medico(models.Model):
     usuario = models.OneToOneField('base.User', on_delete=models.CASCADE)
     crm = models.TextField('CRM', max_length=10)
 
+    class Meta:
+        verbose_name = 'Médico'
+
+    def __str__(self):
+        return self.usuario.nome
+
 
 class User(AbstractUser):
     SEXO_MASCULINO = u'M'

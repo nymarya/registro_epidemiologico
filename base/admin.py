@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from . import utils
-from .forms import PacienteForm, PacienteAdminForm
+from .forms import PacienteForm, PacienteAdminForm, MedicoAdminForm
 from .models import Medico, Paciente, User, PacienteDoenca
 
 
@@ -33,11 +33,37 @@ class UsuarioPacienteAdmin(admin.ModelAdmin):
         verbose_name = 'aa'
 
 
-class UsuarioMedicoAdmin(admin.ModelAdmin):
-    fields = ['cpf', 'nome', 'nome_mae', 'sexo', 'data_nascimento',
-              'email', 'municipio', 'password']
-    inlines = [MedicoInline]
-    model = User
+class MedicoAdmin(admin.ModelAdmin):
+    form = MedicoAdminForm
+
+    def save_model(self, request, obj, form, change):
+        cpf = form.cleaned_data['cpf'].replace('-', '').replace('.', '')
+        usuario = User.objects.get_or_create(username=cpf)[0]
+        utils.save_user(usuario, form, cpf)
+        obj.usuario = usuario
+        obj.crm = form.cleaned_data['crm']
+        obj.save()
+
+    def get_form(self, request, obj=None, **kwargs):
+        form = super(MedicoAdmin, self).get_form(request, obj, **kwargs)
+        if obj is not None:
+            form.request = request
+            form.base_fields['nome'].initial = obj.usuario.nome
+            form.base_fields['cpf'].initial = obj.usuario.cpf
+            form.base_fields['nome_mae'].initial = obj.usuario.nome_mae
+            data = obj.usuario.data_nascimento.strftime("%d/%m/%Y")
+            form.base_fields['data_nascimento'].initial = data
+            form.base_fields['sexo'].initial = obj.usuario.sexo
+            form.base_fields['municipio'].initial = [obj.usuario.municipio.id]
+            form.base_fields['email'].initial = obj.usuario.email
+
+            form.base_fields['password'].required = False
+            form.base_fields['confirma_password'].required = False
+        else:
+            form.base_fields['password'].required = True
+            form.base_fields['confirma_password'].required = True
+
+        return form
 
 
 class PacienteDoencaAdmin(admin.ModelAdmin):
@@ -75,10 +101,9 @@ class PacienteAdmin(admin.ModelAdmin):
             form.base_fields['municipio'].initial = [obj.usuario.municipio.id]
             form.base_fields['email'].initial = obj.usuario.email
 
-            # todo: retirar senha no edit
             form.base_fields['password'].required = False
             form.base_fields['confirma_password'].required = False
-        else :
+        else:
             form.base_fields['password'].required = True
             form.base_fields['confirma_password'].required = True
 
@@ -87,4 +112,4 @@ class PacienteAdmin(admin.ModelAdmin):
 
 admin.site.register(Paciente, PacienteAdmin)
 admin.site.register(PacienteDoenca, PacienteDoencaAdmin)
-admin.site.register(User, UsuarioPacienteAdmin)
+admin.site.register(Medico, MedicoAdmin)

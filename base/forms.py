@@ -3,7 +3,7 @@ from django_select2.forms import ModelSelect2Widget, Select2Widget, \
     ModelSelect2MultipleWidget
 from localflavor.br.forms import BRCPFField
 
-from base.models import User, Municipio, Doenca, Paciente
+from base.models import User, Municipio, Doenca, Paciente, Medico
 
 
 class PacienteForm(forms.ModelForm):
@@ -145,3 +145,57 @@ class PacienteAdminForm(forms.ModelForm):
     class Meta:
         fields = ['cpf']
         model = Paciente
+
+
+class MedicoAdminForm(forms.ModelForm):
+    cpf = BRCPFField(label=u'CPF', widget=forms.TextInput(
+        attrs={'placeholder': '000.000.000-00', 'class': "form-control",
+               'data-toggle': "input-mask",
+               'data-mask-format': "000.000.000-00"}))
+    nome = forms.CharField(label='Nome Completo', widget=forms.TextInput(
+        attrs={'placeholder': 'nome completo', 'class': "form-control"}))
+    nome_mae = forms.CharField(label='Nome da Mãe', widget=forms.TextInput(
+        attrs={'placeholder': 'nome completo da mãe', 'class': "form-control"}))
+
+    data_nascimento = forms.DateField(label=u'Data de Nascimento',
+                                      widget=forms.DateInput(format='%d/%m/%Y',
+                                                             attrs={
+                                                                 'placeholder': 'dia/mês/ano',
+                                                                 'class': 'form-control',
+                                                                 'data-toggle': "input-mask",
+                                                                 'data-mask-format': "00/00/0000",
+                                                                 'data-parsley-pattern': "(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d"}))
+
+    sexo = forms.ChoiceField(label='Sexo', choices=User.SEXO_FORM_CHOICES,
+                             widget=forms.Select(
+                                 attrs={'class': "form-control",
+                                        'data-placeholder': 'selecione o sexo'}))
+    municipio = forms.ModelChoiceField(Municipio.objects,
+                                       label=u'Município', required=True,
+                                       empty_label=u'Selecione o Município',
+                                       widget=forms.Select(
+                                           attrs={'class': 'form-control'}
+                                       ))
+
+    crm = forms.CharField(label=u'CRM', widget=forms.TextInput(
+                                         attrs={'placeholder': 'CRM',
+                                                'class': "form-control"}))
+    email = forms.CharField(label=u'Email', required=True,
+                            widget=forms.TextInput(
+                                attrs={'placeholder': 'email@email.com',
+                                       'class': "form-control"}))
+    password = forms.CharField(
+        label=u'Senha*',
+        widget=forms.PasswordInput(render_value=False,
+                                   attrs={'class': "form-control"})
+    )
+
+    confirma_password = forms.CharField(
+        label=u'Confirmar Senha*',
+        widget=forms.PasswordInput(render_value=False,
+                                   attrs={'class': "form-control"})
+    )
+
+    class Meta:
+        fields = ['cpf']
+        model = Medico
