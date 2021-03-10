@@ -10,13 +10,28 @@ from .models import Medico, Paciente, User, PacienteDoenca, Doenca
 class DoencaAdmin(admin.ModelAdmin):
     model = Doenca
 
+    def has_add_permission(self, request):
+        return request.user.is_superuser or request.user.eh_gestor
+
+    def has_change_permission(self, request, obj=None):
+        return request.user.is_superuser or request.user.eh_gestor
+
+    def has_delete_permission(self, request, obj=None):
+        return request.user.is_superuser or request.user.eh_gestor
+
+    def has_view_permission(self, request, obj=None):
+        return request.user.is_superuser or request.user.eh_gestor
+
+    def has_module_permission(self, request):
+        return request.user.is_superuser or request.user.eh_gestor
+
 
 class MedicoAdmin(admin.ModelAdmin):
     form = MedicoAdminForm
 
     def save_model(self, request, obj, form, change):
         cpf = form.cleaned_data['cpf'].replace('-', '').replace('.', '')
-        usuario = User.objects.get_or_create(username=cpf)[0]
+        usuario = User.objects.get_or_create(username=cpf, is_staff=True)[0]
         utils.save_user(usuario, form, cpf)
         obj.usuario = usuario
         obj.crm = form.cleaned_data['crm']
@@ -46,11 +61,54 @@ class MedicoAdmin(admin.ModelAdmin):
 
         return form
 
+    def has_add_permission(self, request):
+        return request.user.is_superuser or request.user.eh_gestor
+
+    def has_change_permission(self, request, obj=None):
+        return request.user.is_superuser or request.user.eh_gestor
+
+    def has_delete_permission(self, request, obj=None):
+        return request.user.is_superuser or request.user.eh_gestor
+
+    def has_view_permission(self, request, obj=None):
+        return request.user.is_superuser or request.user.eh_gestor
+
+    def has_module_permission(self, request):
+        return request.user.is_superuser or request.user.eh_gestor
+
+    def has_view_or_change_permission(self, request, obj=None):
+        return request.user.is_superuser or request.user.eh_gestor
+
 
 class PacienteDoencaAdmin(admin.ModelAdmin):
     model = PacienteDoenca
     list_display = ('doenca', 'paciente', 'tempo_diagnostico')
-    search_fields = ['doenca__nome__icontains', 'paciente__usuario__nome', 'tempo_diagnostico']
+    search_fields = ['doenca__nome__icontains', 'paciente__usuario__nome',
+                     'tempo_diagnostico']
+
+    def has_add_permission(self, request):
+        eh_medico = Medico.objects.filter(usuario=request.user).exists()
+        return request.user.is_superuser or eh_medico
+
+    def has_change_permission(self, request, obj=None):
+        eh_medico = Medico.objects.filter(usuario=request.user).exists()
+        return request.user.is_superuser or eh_medico
+
+    def has_delete_permission(self, request, obj=None):
+        eh_medico = Medico.objects.filter(usuario=request.user).exists()
+        return request.user.is_superuser or eh_medico
+
+    def has_view_permission(self, request, obj=None):
+        eh_medico = Medico.objects.filter(usuario=request.user).exists()
+        return request.user.is_superuser or eh_medico
+
+    def has_module_permission(self, request):
+        eh_medico = Medico.objects.filter(usuario=request.user).exists()
+        return request.user.is_superuser or eh_medico
+
+    def has_view_or_change_permission(self, request, obj=None):
+        eh_medico = Medico.objects.filter(usuario=request.user).exists()
+        return request.user.is_superuser or eh_medico
 
 
 class PacienteDoencaInline(admin.TabularInline):
@@ -63,7 +121,7 @@ class PacienteAdmin(admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         cpf = form.cleaned_data['cpf'].replace('-', '').replace('.', '')
-        usuario = User.objects.get_or_create(username=cpf)[0]
+        usuario = User.objects.get_or_create(username=cpf, is_staff=True)[0]
         utils.save_user(usuario, form, cpf)
         obj.usuario = usuario
         obj.descricao_caso = form.cleaned_data['descricao_caso']
@@ -92,7 +150,32 @@ class PacienteAdmin(admin.ModelAdmin):
 
         return form
 
+    def has_add_permission(self, request):
+        eh_medico = Medico.objects.filter(usuario=request.user).exists()
+        return request.user.is_superuser or request.user.eh_gestor or eh_medico
+
+    def has_change_permission(self, request, obj=None):
+        eh_medico = Medico.objects.filter(usuario=request.user).exists()
+        return request.user.is_superuser or request.user.eh_gestor or eh_medico
+
+    def has_delete_permission(self, request, obj=None):
+        eh_medico = Medico.objects.filter(usuario=request.user).exists()
+        return request.user.is_superuser or request.user.eh_gestor or eh_medico
+
+    def has_view_permission(self, request, obj=None):
+        eh_medico = Medico.objects.filter(usuario=request.user).exists()
+        return request.user.is_superuser or request.user.eh_gestor or eh_medico
+
+    def has_module_permission(self, request):
+        eh_medico = Medico.objects.filter(usuario=request.user).exists()
+        return request.user.is_superuser or request.user.eh_gestor or eh_medico
+
+    def has_view_or_change_permission(self, request, obj=None):
+        eh_medico = Medico.objects.filter(usuario=request.user).exists()
+        return request.user.is_superuser or request.user.eh_gestor or eh_medico
+
 
 admin.site.register(Paciente, PacienteAdmin)
 admin.site.register(PacienteDoenca, PacienteDoencaAdmin)
 admin.site.register(Medico, MedicoAdmin)
+admin.site.register(Doenca, DoencaAdmin)

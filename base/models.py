@@ -32,6 +32,7 @@ class Doenca(models.Model):
 
     class Meta:
         ordering = ('nome', )
+        verbose_name = 'Doença'
 
     def __str__(self):
         cid_formatada = self.cid[:3] + '.' + self.cid[3:] if len(self.cid) > 3 else self.cid

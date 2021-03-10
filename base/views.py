@@ -8,17 +8,15 @@ from base.models import User
 
 
 def autocadastro(request):
-    # if this is a POST request we need to process the form data
     if request.method == 'POST':
         form = PacienteForm(request.POST)
         if form.is_valid():
             cpf = form.cleaned_data['cpf'].replace('-', '').replace('.', '')
-            usuario = User.objects.get_or_create(username=cpf)[0]
+            usuario = User.objects.get_or_create(username=cpf, is_staff=True)[0]
             # todo: verificar se usuario ja esta criado
             utils.save_user(usuario, form, cpf)
             return redirect('autocadastro')
 
-    # if a GET (or any other method) we'll create a blank form
     else:
         form = PacienteForm()
 
