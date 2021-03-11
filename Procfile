@@ -1,1 +1,1 @@
-web: gunicorn --chdir registro-epidemiologico registro-epidemiologico.wsgi:application
+web: gunicorn registro_epidemiologico.registro_epidemiologico.wsgi:application
