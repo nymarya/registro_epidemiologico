@@ -2,6 +2,6 @@ venv/
 .idea/
 db.sqlite3
 
-registro_epidemiologico/settings.py
+registro_epidemiologico/local_settings.py
 
 *.pyc
