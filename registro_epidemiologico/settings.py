@@ -59,6 +59,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'registro_epidemiologico.urls'
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfile')
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -80,8 +81,6 @@ WSGI_APPLICATION = 'registro_epidemiologico.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
-
-
 
 
 AUTH_USER_MODEL = 'base.User'
