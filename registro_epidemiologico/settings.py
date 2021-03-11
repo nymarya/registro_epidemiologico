@@ -26,7 +26,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG') == True
 
-ALLOWED_HOSTS = ['https://registro-epidemiologico.herokuapp.com']
+ALLOWED_HOSTS = ['https://registro-epidemiologico.herokuapp.com', '*']
 
 
 # Application definition
@@ -60,6 +60,13 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'registro_epidemiologico.urls'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfile')
+STATIC_URL = '/static/'
+
+# Extra places for collectstatic to find static files.
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
