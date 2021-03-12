@@ -284,21 +284,21 @@ class PacienteAdmin(admin.ModelAdmin):
     def has_add_permission(self, request):
         if request.user.is_authenticated:
             eh_medico = Medico.objects.filter(usuario=request.user).exists()
-            return request.user.is_superuser or request.user.eh_gestor or eh_medico
+            return request.user.is_superuser or eh_medico
         else:
             return False
 
     def has_change_permission(self, request, obj=None):
         if request.user.is_authenticated:
             eh_medico = Medico.objects.filter(usuario=request.user).exists()
-            return request.user.is_superuser or request.user.eh_gestor or eh_medico
+            return request.user.is_superuser or eh_medico
         else:
             return False
 
     def has_delete_permission(self, request, obj=None):
         if request.user.is_authenticated:
             eh_medico = Medico.objects.filter(usuario=request.user).exists()
-            return request.user.is_superuser or request.user.eh_gestor or eh_medico
+            return request.user.is_superuser or eh_medico
         else:
             return False
 
