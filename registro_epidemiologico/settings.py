@@ -33,7 +33,7 @@ ALLOWED_HOSTS = ['https://registro-epidemiologico.herokuapp.com']
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
+    #'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -42,6 +42,7 @@ INSTALLED_APPS = [
 
     # local apps
     'base',
+    'base.apps.MyAdminConfig',
 
     # thrid party
     'localflavor',

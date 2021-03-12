@@ -22,6 +22,6 @@ def calcula_faixa_etaria(data_nascimento):
     idade = (datetime.date.today() - data_nascimento).days / 365
     for i, f in classes:
         if i <= idade <= f:
-            return f"{i:02} - {f:02}"
+            return f"{i:02}-{f:02}"
 
     return ">100"

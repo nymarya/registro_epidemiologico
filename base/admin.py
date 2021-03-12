@@ -1,4 +1,11 @@
+import json
+from datetime import date, timedelta
+from dateutil.relativedelta import relativedelta
+
 from django.contrib import admin
+from django.contrib.admin import AdminSite
+from django.db.models import Count, F, CharField
+from django.db.models.expressions import RawSQL, When, Case, Value
 
 from . import utils
 from .forms import PacienteAdminForm, MedicoAdminForm, UsuarioAdminForm
@@ -6,8 +13,6 @@ from .models import Medico, Paciente, User, PacienteDoenca, Doenca
 
 
 # Register your models here.
-
-
 class UsuarioAdmin(admin.ModelAdmin):
     model = User
     form = UsuarioAdminForm
@@ -274,6 +279,72 @@ class PacienteAdmin(admin.ModelAdmin):
         else:
             return False
 
+
+class MyAdminSite(AdminSite):
+    site_header = 'Interface administrativa'
+
+    def index(self, request, extra_context=None):
+        doencas_pizza = Doenca.objects.annotate(y=Count('pacientedoenca'))\
+            .filter(y__gt=0).extra(select={'name': 'nome'}).values('name', 'y')
+        doencas_barra = Doenca.objects.values('nome',
+                                              'pacientedoenca__paciente__usuario__municipio__unidade_federativa__sigla')\
+            .annotate(y=Count('pacientedoenca'))\
+            .annotate(uf=Count('pacientedoenca__paciente__usuario__municipio__unidade_federativa__sigla') )\
+            .filter(y__gt=0).extra(select={'sigla': 'pacientedoenca__paciente__usuario__municipio__unidade_federativa__sigla'})\
+            .values('nome', 'uf', 'y', sigla=F('pacientedoenca__paciente__usuario__municipio__unidade_federativa__sigla'))
+
+        ufs = list(set([doenca['sigla'] for doenca in doencas_barra]))
+        doencas = [{"name": doenca['nome'], "data": [doenca['uf'] if doenca['sigla'] == uf else 0 for uf in ufs]} for doenca in doencas_barra]
+
+        classes = ['0-18', '19-25', '26-35', '36-50', '51-60', '61-70',
+                   '71-80', '81-100']
+        doencas_faixa = Doenca.objects.annotate(faixa=Case(
+                     When(pacientedoenca__paciente__usuario__data_nascimento__lte=date.today() - relativedelta(years=0),
+                          pacientedoenca__paciente__usuario__data_nascimento__gte=date.today() - relativedelta(years=18),
+                          then=Value('0-18')),
+            When(
+                pacientedoenca__paciente__usuario__data_nascimento__lte=date.today() - relativedelta(years=19),
+                pacientedoenca__paciente__usuario__data_nascimento__gte=date.today() - relativedelta(years=25),
+                then=Value('19-25')),
+            When(
+                pacientedoenca__paciente__usuario__data_nascimento__lte=date.today() - relativedelta(years=26),
+                pacientedoenca__paciente__usuario__data_nascimento__gte=date.today() - relativedelta(years=35),
+                then=Value('26-35')),
+            When(
+                pacientedoenca__paciente__usuario__data_nascimento__lte=date.today() - relativedelta(years=36),
+                pacientedoenca__paciente__usuario__data_nascimento__gte=date.today() - relativedelta(years=50),
+                then=Value('36-50')),
+            When(
+                pacientedoenca__paciente__usuario__data_nascimento__lte=date.today() - relativedelta(years=51),
+                pacientedoenca__paciente__usuario__data_nascimento__gte=date.today() - relativedelta(years=60),
+                then=Value('51-60')),
+            When(
+                pacientedoenca__paciente__usuario__data_nascimento__lte=date.today() - relativedelta(years=61),
+                pacientedoenca__paciente__usuario__data_nascimento__gte=date.today() - relativedelta(years=70),
+                then=Value('61-70')),
+            When(
+                pacientedoenca__paciente__usuario__data_nascimento__lte=date.today() - relativedelta(years=71),
+                pacientedoenca__paciente__usuario__data_nascimento__gte=date.today() - relativedelta(years=80),
+                then=Value('71-80')),
+            When(
+                pacientedoenca__paciente__usuario__data_nascimento__lte=date.today() - relativedelta(years=81),
+                pacientedoenca__paciente__usuario__data_nascimento__gte=date.today() - relativedelta(years=100),
+                then=Value('81-100')),
+            default=Value('>100'),
+            output_field=CharField()
+        )).annotate(y=Count('pacientedoenca')) \
+        .annotate(faixa_n=Count('faixa'))\
+        .filter(y__gt=0).values('nome', 'y', 'faixa_n', 'faixa')
+
+        doencas2 = [{"type":"area","name": doenca['nome'], "data": [doenca['y'] if doenca['faixa'] == c else 0 for c in classes] } for doenca in doencas_faixa ]
+        extra = {'pizza': json.dumps(list(doencas_pizza)),
+                 'barra': {'ufs': json.dumps(ufs), 'series': json.dumps(doencas)},
+                 'radar': json.dumps(doencas2)
+                 }
+        return super(MyAdminSite, self).index(request, extra_context=extra)
+
+
+admin.site = MyAdminSite()
 
 admin.site.register(User, UsuarioAdmin )
 admin.site.register(Paciente, PacienteAdmin)

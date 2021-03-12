@@ -1,0 +1,97 @@
+{% extends "admin/app_index.html" %}
+{% load i18n admin_urls %}
+
+
+
+{% block content %}
+
+    <div class="row">
+    <div class="col-md-3">
+        <div id="content-related" {#  style="width: 50%; margin-right: -500px" #}>
+          {% include "admin/app_list.html" with app_list=app_list show_changelinks=True %}
+        </div>
+    </div>
+    <div class="col-md-9">
+        <div id="pie-chart">
+          </div>
+
+         <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js">
+    </script>
+
+        <script src="https://code.highcharts.com/highcharts.src.js"></script>
+          <script>
+            Highcharts.chart('pie-chart', {
+                chart: {
+                    type: 'pie'
+                },
+                title: {
+                    text: 'Número de pacientes por doença'
+                },
+                series: [{
+                    name:'Pacientes',
+                    data:JSON.parse('{{  pizza|safe }}')
+                }]
+            });
+          </script>
+
+    </div>
+
+    <div class="col-md-12">
+        <div id="column-chart">
+          </div>
+
+          <script>
+            Highcharts.chart('column-chart', {
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: 'Número de paciente por estado'
+                },
+                xAxis:{
+                    categories:  JSON.parse('{{  barra.ufs|safe }}')
+                },
+                series: JSON.parse('{{  barra.series|safe }}')
+            });
+          </script>
+
+    </div>
+
+    <div class="col-md-12">
+        <div id="radar-chart">
+          </div>
+<script src="https://code.highcharts.com/highcharts-more.js"></script>
+          <script>
+              var categories = ['0-18', '19-25', '26-35', '36-50', '51-60', '61-70',
+                   '71-80', '81-100']
+            Highcharts.chart('radar-chart', {
+                chart: {
+                    polar: true
+                },
+                title: {
+                    text: 'Números de paciente por faixa etária'
+                },
+                pane: {
+                    startAngle: 0,
+                    endAngle: 360
+                },
+                xAxis:{
+                    categories: categories
+
+                },
+                yAxis: {
+                    min: 0
+                },
+                series: JSON.parse('{{ radar|safe }}')
+            });
+          </script>
+
+    </div>
+
+    </div>
+{% endblock %}
+
+{% block sidebar %}
+
+{% endblock %}
