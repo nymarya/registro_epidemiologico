@@ -29,13 +29,9 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto col-md-11">
                     <li class="nav-item active">
-                        <a class="nav-link" href="#">Início <span class="sr-only">(current)</span></a>
+                        <a class="nav-link" href="/">Início <span class="sr-only">(current)</span></a>
                     </li>
-                    {% if not request.user.is_authenticated %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="/admin">Login</a>
-                    </li>
-                    {% else %}
+                    {% if request.user.is_authenticated %}
                         <li class="nav-item">
                             <a class="nav-link" href="/admin">Administração</a>
                         </li>
@@ -45,6 +41,10 @@
                     {% if request.user.is_authenticated %}
                     <li class="nav-item">
                         <a class="nav-link" href="/admin/logout/">Sair</a>
+                    </li>
+                        {% else %}
+                        <li class="nav-item">
+                        <a class="nav-link" href="/admin">Login</a>
                     </li>
                     {% endif %}
                 </ul>
