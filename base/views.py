@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 # Create your views here.
 from base import utils
 from base.forms import PacienteForm
-from base.models import User, Paciente
+from base.models import User, Paciente, PacienteDoenca
 
 
 def autocadastro(request):
@@ -18,6 +18,9 @@ def autocadastro(request):
             paciente.usuario = usuario
             paciente.descricao_caso = form.cleaned_data['descricao_caso']
             paciente.save()
+
+            for doenca in form.cleaned_data['doencas']:
+                PacienteDoenca.objects.create(paciente=paciente, doenca=doenca)
             return redirect('autocadastro')
 
     else:

@@ -74,7 +74,7 @@ class MedicoAdmin(admin.ModelAdmin):
         cpf = form.cleaned_data['cpf'].replace('-', '').replace('.', '')
         usuario = User.objects.get_or_create(username=cpf, is_staff=True)[0]
         utils.salva_usuario(usuario, form, cpf)
-        obj.user = usuario
+        obj.usuario = usuario
         obj.crm = form.cleaned_data['crm']
         obj.save()
 
@@ -82,15 +82,15 @@ class MedicoAdmin(admin.ModelAdmin):
         form = super(MedicoAdmin, self).get_form(request, obj, **kwargs)
         if obj is not None:
             form.request = request
-            form.base_fields['nome'].initial = obj.user.nome
-            form.base_fields['cpf'].initial = obj.user.cpf
-            form.base_fields['nome_mae'].initial = obj.user.nome_mae
-            data = obj.user.data_nascimento.strftime("%d/%m/%Y")
+            form.base_fields['nome'].initial = obj.usuario.nome
+            form.base_fields['cpf'].initial = obj.usuario.cpf
+            form.base_fields['nome_mae'].initial = obj.usuario.nome_mae
+            data = obj.usuario.data_nascimento.strftime("%d/%m/%Y")
             form.base_fields['data_nascimento'].initial = data
-            form.base_fields['sexo'].initial = obj.user.sexo
-            form.base_fields['municipio'].initial = [obj.user.municipio.id]
-            form.base_fields['email'].initial = obj.user.email
-            form.base_fields['eh_gestor'].initial = obj.user.eh_gestor
+            form.base_fields['sexo'].initial = obj.usuario.sexo
+            form.base_fields['municipio'].initial = [obj.usuario.municipio.id]
+            form.base_fields['email'].initial = obj.usuario.email
+            form.base_fields['eh_gestor'].initial = obj.usuario.eh_gestor
 
             form.base_fields['password'].required = False
             form.base_fields['confirma_password'].required = False
@@ -210,7 +210,7 @@ class PacienteAdmin(admin.ModelAdmin):
         cpf = form.cleaned_data['cpf'].replace('-', '').replace('.', '')
         usuario = User.objects.get_or_create(username=cpf, is_staff=True)[0]
         utils.salva_usuario(usuario, form, cpf)
-        obj.user = usuario
+        obj.usuario = usuario
         obj.descricao_caso = form.cleaned_data['descricao_caso']
         obj.save()
 
@@ -218,14 +218,14 @@ class PacienteAdmin(admin.ModelAdmin):
         form = super(PacienteAdmin, self).get_form(request, obj, **kwargs)
         if obj is not None:
             form.request = request
-            form.base_fields['nome'].initial = obj.user.nome
-            form.base_fields['cpf'].initial = obj.user.cpf
-            form.base_fields['nome_mae'].initial = obj.user.nome_mae
-            data = obj.user.data_nascimento.strftime("%d/%m/%Y")
+            form.base_fields['nome'].initial = obj.usuario.nome
+            form.base_fields['cpf'].initial = obj.usuario.cpf
+            form.base_fields['nome_mae'].initial = obj.usuario.nome_mae
+            data = obj.usuario.data_nascimento.strftime("%d/%m/%Y")
             form.base_fields['data_nascimento'].initial = data
-            form.base_fields['sexo'].initial = obj.user.sexo
-            form.base_fields['municipio'].initial = [obj.user.municipio.id]
-            form.base_fields['email'].initial = obj.user.email
+            form.base_fields['sexo'].initial = obj.usuario.sexo
+            form.base_fields['municipio'].initial = [obj.usuario.municipio.id]
+            form.base_fields['email'].initial = obj.usuario.email
 
             form.base_fields['password'].required = False
             form.base_fields['confirma_password'].required = False
