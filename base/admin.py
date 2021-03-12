@@ -294,8 +294,17 @@ class MyAdminSite(AdminSite):
             .values('nome', 'uf', 'y', sigla=F('pacientedoenca__paciente__usuario__municipio__unidade_federativa__sigla'))
 
         ufs = list(set([doenca['sigla'] for doenca in doencas_barra]))
-        doencas = [{"name": doenca['nome'], "data": [doenca['uf'] if doenca['sigla'] == uf else 0 for uf in ufs]} for doenca in doencas_barra]
+        #doencas = [{"name": doenca['nome'], "data": [doenca['uf'] if doenca['sigla'] == uf else 0 for uf in ufs]} for doenca in doencas_barra]
 
+        d = list(set([d['nome'] for d in doencas_barra]))
+        data_barra = {doenca: [0 for c in ufs] for doenca in d}
+        for doenca in doencas_barra:
+            for j, classe in enumerate(ufs):
+                if doenca['sigla'] == classe:
+                    data_barra[doenca['nome']][j] = doenca['y']
+
+        doencas = [{"name": doenca, "data": data_barra[doenca]}
+                    for doenca in d]
         classes = ['0-18', '19-25', '26-35', '36-50', '51-60', '61-70',
                    '71-80', '81-100']
         doencas_faixa = Doenca.objects.annotate(faixa=Case(
@@ -336,7 +345,15 @@ class MyAdminSite(AdminSite):
         .annotate(faixa_n=Count('faixa'))\
         .filter(y__gt=0).values('nome', 'y', 'faixa_n', 'faixa')
 
-        doencas2 = [{"type":"area","name": doenca['nome'], "data": [doenca['y'] if doenca['faixa'] == c else 0 for c in classes] } for doenca in doencas_faixa ]
+        d = list(set([d['nome'] for d in doencas_faixa]))
+        data_faixa = { doenca : [0 for c in classes] for doenca in d}
+        for doenca in doencas_faixa:
+            for j, classe in enumerate(classes):
+                if doenca['faixa'] == classe:
+                    data_faixa[doenca['nome']][j] = doenca['y']
+
+        doencas2 = [{"type":"area", "name": doenca, "data": data_faixa[doenca] } for doenca in d]
+        print(doencas2)
         extra = {'pizza': json.dumps(list(doencas_pizza)),
                  'barra': {'ufs': json.dumps(ufs), 'series': json.dumps(doencas)},
                  'radar': json.dumps(doencas2)
