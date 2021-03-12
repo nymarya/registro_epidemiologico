@@ -196,10 +196,10 @@ class PacienteAdmin(admin.ModelAdmin):
     list_display = ('nome', 'faixa_etaria')
 
     def nome(self, obj):
-        return obj.user
+        return obj.usuario
 
     def faixa_etaria(self, obj):
-        return utils.calcula_faixa_etaria(obj.user.data_nascimento)
+        return utils.calcula_faixa_etaria(obj.usuario.data_nascimento)
 
     def save_model(self, request, obj, form, change):
         cpf = form.cleaned_data['cpf'].replace('-', '').replace('.', '')

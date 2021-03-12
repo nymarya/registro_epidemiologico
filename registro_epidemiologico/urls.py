@@ -18,10 +18,12 @@ from django.contrib import admin
 from django.urls import path
 from django.conf.urls import include, url
 
+from . import views
 from registro_epidemiologico import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     url(r'^select2/', include('django_select2.urls')),
-    url(r'^base/', include('base.urls'))
+    url(r'^base/', include('base.urls')),
+    url('', views.index, name='index')
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

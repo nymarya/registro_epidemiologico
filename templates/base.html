@@ -14,7 +14,7 @@
     {% block css %} {% endblock %}
 
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
-    <title>Django + Bootstrap</title>
+    <title>Registro epidemiológico</title>
 </head>
 
 <body>
@@ -27,26 +27,43 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav mr-auto">
+                <ul class="navbar-nav mr-auto col-md-11">
                     <li class="nav-item active">
-                        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                        <a class="nav-link" href="#">Início <span class="sr-only">(current)</span></a>
                     </li>
+                    {% if not request.user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Link</a>
+                        <a class="nav-link" href="/admin">Login</a>
                     </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin">Administração</a>
+                        </li>
+                    {% endif %}
+                </ul>
+                <ul class="navbar-nav navbar-collapse col-md-1">
+                    {% if request.user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/logout/">Sair</a>
+                    </li>
+                    {% endif %}
                 </ul>
             </div>
         </div>
     </nav>
 
      <div class="wrapper">
+            {% block container %}
             <div class="container-fluid" id="appvue">
             <div class="row">
-                <div class="col-md-12 border-bottom pb-2 mb-3">
-                    <h2>Auto cadastro</h2>
+                <div class="col-md-12">
+                    <div class="border-bottom pb-2 mb-3 mt-3  px-4">
+                        <h2>{% block title %} Registro epidemiológico{% endblock %}</h2>
+                    </div>
                 </div>
             </div>
-        <div>
+            <div>
+            {% endblock %}
             {% block content %}{% endblock %}
         </div>
         </div>
