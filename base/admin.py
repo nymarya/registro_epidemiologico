@@ -191,6 +191,50 @@ class PacienteDoencaAdmin(admin.ModelAdmin):
 class PacienteDoencaInline(admin.TabularInline):
     model = PacienteDoenca
 
+    def has_add_permission(self, request, obj):
+        if request.user.is_authenticated:
+            eh_medico = Medico.objects.filter(usuario=request.user).exists()
+            return request.user.is_superuser or request.user.eh_gestor or eh_medico
+        else:
+            return False
+
+    def has_change_permission(self, request, obj=None):
+        if request.user.is_authenticated:
+            eh_medico = Medico.objects.filter(usuario=request.user).exists()
+            return request.user.is_superuser or request.user.eh_gestor or eh_medico
+        else:
+            return False
+
+    def has_delete_permission(self, request, obj=None):
+        if request.user.is_authenticated:
+            eh_medico = Medico.objects.filter(usuario=request.user).exists()
+            return request.user.is_superuser or request.user.eh_gestor or eh_medico
+        else:
+            return False
+
+    def has_view_permission(self, request, obj=None):
+        if request.user.is_authenticated:
+            eh_medico = Medico.objects.filter(usuario=request.user).exists()
+            return request.user.is_superuser or request.user.eh_gestor or eh_medico
+        else:
+            return False
+
+    def has_module_permission(self, request):
+        if request.user.is_authenticated:
+            eh_medico = Medico.objects.filter(usuario=request.user).exists()
+            return request.user.is_superuser or request.user.eh_gestor or eh_medico
+        else:
+            return False
+
+    def has_view_or_change_permission(self, request, obj=None):
+        if request.user.is_authenticated:
+            eh_medico = Medico.objects.filter(usuario=request.user).exists()
+            return request.user.is_superuser or request.user.eh_gestor or eh_medico
+        else:
+            return False
+
+
+
 
 class PacienteAdmin(admin.ModelAdmin):
     form = PacienteAdminForm
@@ -345,7 +389,6 @@ class MyAdminSite(AdminSite):
         .annotate(faixa_n=Count('faixa'))\
         .filter(y__gt=0).values('nome', 'y', 'faixa_n', 'faixa')
 
-        d = list(set([d['nome'] for d in doencas_faixa]))
         data_faixa = { doenca : [0 for c in classes] for doenca in d}
         for doenca in doencas_faixa:
             for j, classe in enumerate(classes):
@@ -353,7 +396,6 @@ class MyAdminSite(AdminSite):
                     data_faixa[doenca['nome']][j] = doenca['y']
 
         doencas2 = [{"type":"area", "name": doenca, "data": data_faixa[doenca] } for doenca in d]
-        print(doencas2)
         extra = {'pizza': json.dumps(list(doencas_pizza)),
                  'barra': {'ufs': json.dumps(ufs), 'series': json.dumps(doencas)},
                  'radar': json.dumps(doencas2)
