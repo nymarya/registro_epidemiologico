@@ -26,6 +26,9 @@ class UsuarioAdmin(admin.ModelAdmin):
 class DoencaAdmin(admin.ModelAdmin):
     model = Doenca
 
+    list_display = ('nome', 'cid')
+    search_fields = ['nome__icontains']
+
     def has_add_permission(self, request):
         if request.user.is_authenticated:
             return request.user.is_superuser or request.user.eh_gestor
@@ -61,14 +64,18 @@ class MedicoAdmin(admin.ModelAdmin):
     form = MedicoAdminForm
     model = Medico
 
-    list_display = ('medico', 'crm')
+    list_display = ('medico', 'crm', 'municipio')
     search_fields = ['medico__nome__icontains']
+
+    list_filter = ['usuario__municipio__unidade_federativa']
 
     def medico(self, obj):
         return obj
 
     def crm(self, obj):
         return obj.crm
+    def municipio(self, obj):
+        return obj.usuario.municipio
 
     def save_model(self, request, obj, form, change):
         cpf = form.cleaned_data['cpf'].replace('-', '').replace('.', '')
@@ -144,6 +151,8 @@ class PacienteDoencaAdmin(admin.ModelAdmin):
     list_display = ('doenca', 'paciente', 'tempo_diagnostico')
     search_fields = ['doenca__nome__icontains', 'paciente__usuario__nome',
                      'tempo_diagnostico']
+
+    list_filter = ['tempo_diagnostico']
 
     def has_add_permission(self, request):
         if request.user.is_authenticated:
@@ -242,10 +251,15 @@ class PacienteAdmin(admin.ModelAdmin):
 
     model = Paciente
 
-    list_display = ('nome', 'faixa_etaria')
+    list_display = ('nome', 'faixa_etaria', 'municipio')
+
+    list_filter = ['usuario__municipio__unidade_federativa']
 
     def nome(self, obj):
         return obj.usuario
+
+    def municipio(self, obj):
+        return obj.usuario.municipio
 
     def faixa_etaria(self, obj):
         return utils.calcula_faixa_etaria(obj.usuario.data_nascimento)
