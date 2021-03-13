@@ -1,4 +1,5 @@
 from django import forms
+from django.core.paginator import Paginator
 from django_select2.forms import ModelSelect2Widget, Select2Widget, \
     ModelSelect2MultipleWidget
 from localflavor.br.forms import BRCPFField
@@ -114,11 +115,22 @@ class PacienteAdminForm(forms.ModelForm):
                              widget=forms.Select(
                                  attrs={'class': "form-control",
                                         'data-placeholder': 'selecione o sexo'}))
+    # municipio = forms.ModelChoiceField(label='Município',
+    #                                    queryset=Municipio.objects,
+    #                                    required=True,
+    #                                    widget=ModelSelect2Widget(
+    #                                        model=Municipio,
+    #                                        search_fields=['nome__icontains'],
+    #                                        attrs={'class': "form-control django-select2",
+    #                                               "data-minimum-input-length": "0",
+    #                                               "data-placeholder": "busque e selecione um município"}))
+
     municipio = forms.ModelChoiceField(Municipio.objects,
                                        label=u'Município', required=True,
                                        empty_label=u'Selecione o Município',
                                        widget=forms.Select(
-                                           attrs={'class': 'form-control'}
+                                           attrs={
+                                               'class': 'form-control django-select2'}
                                        ))
 
     descricao_caso = forms.CharField(label=u'Descrição do caso',
@@ -174,7 +186,7 @@ class MedicoAdminForm(forms.ModelForm):
                                        label=u'Município', required=True,
                                        empty_label=u'Selecione o Município',
                                        widget=forms.Select(
-                                           attrs={'class': 'form-control'}
+                                           attrs={'class': 'form-control django-select2'}
                                        ))
 
     crm = forms.CharField(label=u'CRM', widget=forms.TextInput(
@@ -231,7 +243,7 @@ class UsuarioAdminForm(forms.ModelForm):
                                        label=u'Município', required=True,
                                        empty_label=u'Selecione o Município',
                                        widget=forms.Select(
-                                           attrs={'class': 'form-control'}
+                                           attrs={'class': 'form-control '}
                                        ))
 
     email = forms.CharField(label=u'Email', required=True,
